@@ -8,10 +8,9 @@ const Canvas = () => {
   
     useEffect(() => {
         const c = new fabric.Canvas("canvas", {
-          height: 550,
-          width: 950,
           backgroundColor: "black",
         });
+        c.setDimensions({width: '100%', height: "100%"}, {cssOnly: true})
     
         // settings for all canvas in the app
         fabric.FabricObject.prototype.transparentCorners = false;
