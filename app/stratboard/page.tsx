@@ -1,3 +1,4 @@
+"use client"
 import Canvas from "../ui/stratboard/canvas";
 import TopNav from "../ui/stratboard/topnav";
 import SideMenu from "../ui/stratboard/sidemenu";

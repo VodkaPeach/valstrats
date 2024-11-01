@@ -1,11 +1,13 @@
 "use client"
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import {fabric} from 'fabric';
+import { useAppStore } from '@/app/providers/app-store-provider';
 
 const Canvas = () => {
+    const {map, canvas, changeCanvas} = useAppStore((state)=>state,)
     // States for Canvas
     const canvasRef = useRef(null);
-    const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+    // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -19,7 +21,7 @@ const Canvas = () => {
             });
             //fabricCanvas.setDimensions({width:"100%", height:"100%"}, {cssOnly:true})
     
-            setCanvas(fabricCanvas);
+            changeCanvas(fabricCanvas);
     
             fabricCanvas.backgroundColor = 'lightgray';
             fabricCanvas.renderAll();
@@ -33,7 +35,7 @@ const Canvas = () => {
     // Load and center SVG on the canvas
     useEffect(() => {
       if (canvas) {
-          fabric.loadSVGFromURL('/minimap/Abyss_minimap.svg', (objects, options) => {
+          fabric.loadSVGFromURL(`/minimap/${map}.svg`, (objects, options) => {
               const svg = fabric.util.groupSVGElements(objects, options);
               // Add the SVG to the canvas and render
               canvas?.add(svg);
