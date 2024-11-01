@@ -8,7 +8,7 @@ export default function StratBoard () {
             <div className="border-b px-60 py-4"><TopNav /></div>
             <div className="flex w-full h-5/6 flex-row border-b">
                 <div className="border-r px-3 w-1/6"><SideMenu /></div>
-                <div className="border-r w-3/4"><Canvas /></div>
+                <div className="border-r w-3/4 overflow-hidden"><Canvas /></div>
                 <div className="w-1/6"></div>
             </div>
             <div className=""><BottomBar /></div>
