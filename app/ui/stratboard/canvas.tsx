@@ -42,6 +42,22 @@ const Canvas = () => {
       }
     }, [canvas]);
 
+    useEffect(()=>{
+        if(canvas){
+            canvas.on('mouse:wheel', (opt) => {
+                const delta = opt.e.deltaY;
+                let zoom:number = canvas.getZoom();
+                zoom*=0.999**delta;
+                if(zoom>3) zoom=3;
+                if(zoom<0.5) zoom=0.5;
+                canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                opt.e.preventDefault();
+                opt.e.stopPropagation();
+            })
+        };
+        
+    }, [canvas])
+
     return (
         <div >
             <canvas ref={canvasRef} />
