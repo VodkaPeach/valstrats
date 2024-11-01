@@ -54,22 +54,22 @@ export default function BottomBar(){
     ]
     const agentIconArray = agentIconPaths.map(
         (path, index) => (
-                <Image
-                key={index} 
-                src={`${path}`}
-                alt={"agent icon"}
-                width={100}
-                height={100}
-                className="px-1"
+          //<button key={index} className="w-auto h-full py-0.5 rounded-lg border-black border-2 bg-cyan-950">
+            <Image
+              key={index}
+              src={`${path}`}
+              alt={"agent icon"}
+              width={100}
+              height={100}
+              className="bg-slate-600 hover:bg-white rounded-lg border-2 border-blue-950"
             />  
+          //</button>
         )
     )
     return(
-        <div ref={scrollContainerRef} className="flex overflow-auto">
-            <div className="flex flex-row">
-                <div>Ally</div>
-                <div className="flex flex-row">{agentIconArray}</div>
-            </div>
+        <div ref={scrollContainerRef} className="flex flow-row overflow-auto">  
+          <div>Ally</div>
+          <div className="flex my-0.5">{agentIconArray}</div>
         </div>
     )
 }
