@@ -4,7 +4,7 @@ import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 
 const Canvas = () => {
-    const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps} = useAppStore((state)=>state,)
+    const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps, currentMapObject, changeCurrentMapObject} = useAppStore((state)=>state,)
     // States for Canvas
     const canvasRef = useRef(null);
     // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
@@ -77,11 +77,20 @@ const Canvas = () => {
       if (canvas) {
         canvas.remove(...canvas.getObjects())
         if (svgMaps) {
-            canvas.add(svgMaps[map])
+            const mapObject = svgMaps[map]
+            canvas.add(mapObject)
+            changeCurrentMapObject(mapObject)
             canvas?.renderAll();
         }
       }
     }, [canvas, map]);
+
+    useEffect(()=>{
+        if (currentMapObject) {
+            currentMapObject.set('flipY', isAttack)
+            canvas?.renderAll()
+        }
+    }, [isAttack])
 
     useEffect(()=>{
         if(canvas){

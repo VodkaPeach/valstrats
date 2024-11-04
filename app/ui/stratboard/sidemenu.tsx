@@ -1,11 +1,16 @@
 'use client'
 import MapMenu from "./dropdown"
+import { useAppStore } from "@/app/providers/app-store-provider"
 export default function SideMenu(){
+    const {changeSide} = useAppStore(state=>state)
+    const handleChangeSide = () => {
+        changeSide()
+    }
     return(
         <div className="flex flex-col">
             <div className="flex flex-row">
                 <MapMenu/>
-                <button>A</button>
+                <button onClick={handleChangeSide}>A</button>
             </div>
             <div>
                 <button>Delete Everything</button>

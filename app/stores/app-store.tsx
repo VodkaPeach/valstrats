@@ -6,6 +6,7 @@ export type AppState = {
   canvas: fabric.Canvas | null
   isAttack: boolean
   svgMaps: {[key: string]: fabric.Object} | null
+  currentMapObject: fabric.Object | null
 }
 
 export type AppActions = {
@@ -13,12 +14,13 @@ export type AppActions = {
   changeCanvas: (newCanvas: fabric.Canvas) => void
   changeSide: () => void
   changeSVGMaps: (newSVGMaps: {[key: string]: fabric.Object}) => void
+  changeCurrentMapObject: (newMapObject: fabric.Object) => void
 }
 
 export type AppStore = AppState & AppActions
 
 export const initAppStore = ():AppState=>{
-  return {map: "Ascent", canvas: null, isAttack: true, svgMaps: null,}
+  return {map: "Ascent", canvas: null, isAttack: true, svgMaps: null, currentMapObject: null}
 }
 
 export const defaultInitState: AppState = {
@@ -26,6 +28,7 @@ export const defaultInitState: AppState = {
   canvas: null,
   isAttack: true,
   svgMaps: null,
+  currentMapObject: null,
 }
 
 export const createAppStore = (
@@ -36,6 +39,7 @@ export const createAppStore = (
     changeMap: (newMap) => set(() => ({ map: newMap })),
     changeCanvas: (newCanvas) => set(()=>({canvas: newCanvas})),
     changeSide: () => set((state)=>({isAttack: !state.isAttack})),
-    changeSVGMaps: (newSVGMaps) => set(()=>({svgMaps: newSVGMaps}))
+    changeSVGMaps: (newSVGMaps) => set(()=>({svgMaps: newSVGMaps})),
+    changeCurrentMapObject: (newMapObject) => set(()=>({currentMapObject: newMapObject}))
   }))
 }
