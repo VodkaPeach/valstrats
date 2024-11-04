@@ -1,8 +1,10 @@
+'use client'
+import MapMenu from "./dropdown"
 export default function SideMenu(){
     return(
         <div className="flex flex-col">
             <div className="flex flex-row">
-                <button>Map</button>
+                <MapMenu/>
                 <button>A</button>
             </div>
             <div>

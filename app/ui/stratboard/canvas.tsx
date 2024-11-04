@@ -4,7 +4,7 @@ import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 
 const Canvas = () => {
-    const {map, canvas, changeCanvas} = useAppStore((state)=>state,)
+    const {map, canvas, changeCanvas, isAttack} = useAppStore((state)=>state,)
     // States for Canvas
     const canvasRef = useRef(null);
     // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
@@ -35,14 +35,15 @@ const Canvas = () => {
     // Load and center SVG on the canvas
     useEffect(() => {
       if (canvas) {
-          fabric.loadSVGFromURL(`/minimap/${map}.svg`, (objects, options) => {
-              const svg = fabric.util.groupSVGElements(objects, options);
-              // Add the SVG to the canvas and render
-              canvas?.add(svg);
-              canvas?.renderAll();
-          });
+        canvas.remove(...canvas.getObjects())
+        fabric.loadSVGFromURL(`/minimap/${map}.svg`, (objects, options) => {
+            const svg = fabric.util.groupSVGElements(objects, options);
+            // Add the SVG to the canvas and render
+            canvas?.add(svg);
+            canvas?.renderAll();
+        });
       }
-    }, [canvas]);
+    }, [canvas, map]);
 
     useEffect(()=>{
         if(canvas){

@@ -4,22 +4,25 @@ import { createStore } from 'zustand/vanilla'
 export type AppState = {
   map: string
   canvas: fabric.Canvas | null
+  isAttack: boolean
 }
 
 export type AppActions = {
   changeMap: (newApp: string) => void
   changeCanvas: (newCanvas: fabric.Canvas) => void
+  changeSide: () => void
 }
 
 export type AppStore = AppState & AppActions
 
 export const initAppStore = ():AppState=>{
-  return {map: "Ascent", canvas: null}
+  return {map: "Ascent", canvas: null, isAttack: true}
 }
 
 export const defaultInitState: AppState = {
   map: "Abyss",
-  canvas: null
+  canvas: null,
+  isAttack: true,
 }
 
 export const createAppStore = (
@@ -27,7 +30,8 @@ export const createAppStore = (
 ) => {
   return createStore<AppStore>()((set) => ({
     ...initState,
-    changeMap: (newApp) => set(() => ({ map: newApp })),
-    changeCanvas: (newCanvas) => set(()=>({canvas: newCanvas}))
+    changeMap: (newMap) => set(() => ({ map: newMap })),
+    changeCanvas: (newCanvas) => set(()=>({canvas: newCanvas})),
+    changeSide: () => set((state)=>({isAttack: !state.isAttack})),
   }))
 }
