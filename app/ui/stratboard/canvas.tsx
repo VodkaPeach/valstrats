@@ -4,10 +4,50 @@ import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 
 const Canvas = () => {
-    const {map, canvas, changeCanvas, isAttack} = useAppStore((state)=>state,)
+    const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps} = useAppStore((state)=>state,)
     // States for Canvas
     const canvasRef = useRef(null);
     // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+
+    interface LoadedSVG {
+        path: string;
+        svg: fabric.Object;
+      }
+
+    useEffect(()=>{
+        const svgPaths = [
+            'Abyss',
+            'Ascent',
+            'Bind',
+            'Breeze',
+            'Fracture',
+            'Haven',
+            'Icebox',
+            'Lotus',
+            'Pearl',
+            'Split',
+            'Sunset',
+        ];
+        Promise.all<LoadedSVG>(
+            svgPaths.map((path: string) =>
+              new Promise((resolve, reject) => {
+                fabric.loadSVGFromURL(`/minimap/${path}.svg`, (objects, options) => {
+                  if (objects) {
+                    resolve({ path, svg: fabric.util.groupSVGElements(objects, options) });
+                  } else {
+                    reject(`Failed to load ${path}`);
+                  }
+                });
+              })
+            )
+          ).then((svgData) => {
+            const svgMapGroups: Record<string, fabric.Object> = {};
+            svgData.forEach(({ path, svg }) => {
+              svgMapGroups[path] = svg;
+            });
+            changeSVGMaps(svgMapGroups);
+          }).catch((error) => console.error(error));
+    }, [])
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -30,18 +70,16 @@ const Canvas = () => {
                 fabricCanvas.dispose();
             };
         }
-    }, []);
+    }, [svgMaps]);
 
     // Load and center SVG on the canvas
     useEffect(() => {
       if (canvas) {
         canvas.remove(...canvas.getObjects())
-        fabric.loadSVGFromURL(`/minimap/${map}.svg`, (objects, options) => {
-            const svg = fabric.util.groupSVGElements(objects, options);
-            // Add the SVG to the canvas and render
-            canvas?.add(svg);
+        if (svgMaps) {
+            canvas.add(svgMaps[map])
             canvas?.renderAll();
-        });
+        }
       }
     }, [canvas, map]);
 
