@@ -1,6 +1,6 @@
 "use client"
-import Image from "next/image"
 import { useRef, useEffect } from "react";
+import Draggable from "./draggable";
 
 export default function BottomBar(){
     const scrollContainerRef = useRef<HTMLDivElement>(null); // Reference to the scrollable container
@@ -25,7 +25,7 @@ export default function BottomBar(){
         container!.removeEventListener('wheel', handleWheel);
       };
     }, []);
-    const agentIconPaths: String[] = [
+    const agentIconPaths: string[] = [
         "/agent/Astra_icon.webp",
         "/agent/Breach_icon.webp",
         "/agent/Brimstone_icon.webp",
@@ -54,16 +54,7 @@ export default function BottomBar(){
     ]
     const agentIconArray = agentIconPaths.map(
         (path, index) => (
-          //<button key={index} className="w-auto h-full py-0.5 rounded-lg border-black border-2 bg-cyan-950">
-            <Image
-              key={index}
-              src={`${path}`}
-              alt={"agent icon"}
-              width={100}
-              height={100}
-              className="bg-slate-600 hover:bg-white rounded-lg border-2 border-blue-950"
-            />  
-          //</button>
+          <Draggable src={path} key={index}/>
         )
     )
     return(
