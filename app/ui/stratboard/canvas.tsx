@@ -115,7 +115,6 @@ const Canvas = () => {
         fabric.Image.fromURL(draggableSrc, (img) => {
           img.scale(0.05)
           img.set({
-          
           left: 0,
           top: 0,
           originX: 'center',
@@ -124,7 +123,7 @@ const Canvas = () => {
           });
           canvas?.add(img);
           canvas?.renderAll();
-          console.log(canvas)
+          setDraggableSrc('')
       });
       }
        
