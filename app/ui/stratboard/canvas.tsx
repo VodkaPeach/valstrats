@@ -109,7 +109,12 @@ const Canvas = () => {
           originX: 'center',
           originY: 'center',
           selectable: true,
+          backgroundColor: ""
           });
+          img.lockScalingX=true
+          img.lockScalingY=true
+          img.lockRotation=true
+          img.hasControls=false
           canvas?.add(img);
           canvas?.renderAll();
           setDraggableSrc('')
@@ -125,6 +130,7 @@ const Canvas = () => {
         if (svgMaps) {
             const mapObject = svgMaps[map]
             mapObject.selectable=false;
+            mapObject.flipY=isAttack
             changeCurrentMapObject(mapObject);
             canvas.add(mapObject)
             canvas?.renderAll();
@@ -137,7 +143,7 @@ const Canvas = () => {
             currentMapObject.set('flipY', isAttack)
             canvas?.renderAll()
         }
-    }, [isAttack])
+    }, [canvas, isAttack])
 
     useEffect(()=>{
         if(canvas){
@@ -151,7 +157,6 @@ const Canvas = () => {
                 opt.e.preventDefault();
                 opt.e.stopPropagation();
             })
-            console.log(currentMapObject)
             canvas.on('mouse:down', function(this: any, opt){
               var evt = opt.e;
               
