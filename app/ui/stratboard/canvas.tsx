@@ -66,11 +66,6 @@ const Canvas = () => {
             fabricCanvas.backgroundColor = 'lightgray';
             fabricCanvas.renderAll();
 
-
-
-                        
-
-
             // Prevent default behavior for dragover to allow drops
             const handleDragOver = (event: DragEvent) => {
               //console.log("default prevented")
@@ -130,8 +125,8 @@ const Canvas = () => {
         if (svgMaps) {
             const mapObject = svgMaps[map]
             mapObject.selectable=false;
+            changeCurrentMapObject(mapObject);
             canvas.add(mapObject)
-            changeCurrentMapObject(mapObject)
             canvas?.renderAll();
         }
       }
@@ -156,9 +151,11 @@ const Canvas = () => {
                 opt.e.preventDefault();
                 opt.e.stopPropagation();
             })
+            console.log(currentMapObject)
             canvas.on('mouse:down', function(this: any, opt){
               var evt = opt.e;
-              if (evt.altKey === true) {
+              
+              if (!opt.target || opt.target==currentMapObject) {
                 this.isDragging = true;
                 this.selection = false;
                 this.lastPosX = evt.clientX;
@@ -185,7 +182,7 @@ const Canvas = () => {
             });
         };
         
-    }, [canvas])
+    }, [canvas,currentMapObject])
 
     return (
         <div >
