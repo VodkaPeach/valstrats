@@ -86,11 +86,6 @@ const Canvas = () => {
               
               if (imageUrl) {
                 setDraggableSrc(imageUrl)
-              //const rect = canvasRef.current!.getBoundingClientRect();
-              //const x = event.clientX - rect.left;
-              //const y = event.clientY - rect.top;
-              
-              
               }
           };
             // Attach event listeners to the canvas container
@@ -99,7 +94,6 @@ const Canvas = () => {
                 canvasContainer.addEventListener('dragover', handleDragOver as EventListener);
                 canvasContainer.addEventListener('drop', handleDrop as EventListener);
             }
-            //console.log(canvas)
             return () => {
                 if (canvasContainer) {
                   canvasContainer.addEventListener('dragover', handleDragOver);
@@ -162,6 +156,33 @@ const Canvas = () => {
                 opt.e.preventDefault();
                 opt.e.stopPropagation();
             })
+            canvas.on('mouse:down', function(this: any, opt){
+              var evt = opt.e;
+              if (evt.altKey === true) {
+                this.isDragging = true;
+                this.selection = false;
+                this.lastPosX = evt.clientX;
+                this.lastPosY = evt.clientY;
+              }
+            });
+            canvas.on('mouse:move', function(this: any, opt) {
+              if (this.isDragging) {
+                var e = opt.e;
+                var vpt = this.viewportTransform;
+                vpt[4] += e.clientX - this.lastPosX;
+                vpt[5] += e.clientY - this.lastPosY;
+                this.requestRenderAll();
+                this.lastPosX = e.clientX;
+                this.lastPosY = e.clientY;
+              }
+            });
+            canvas.on('mouse:up', function(this: any, opt) {
+              // on mouse up we want to recalculate new interaction
+              // for all objects, so we call setViewportTransform
+              this.setViewportTransform(this.viewportTransform);
+              this.isDragging = false;
+              this.selection = true;
+            });
         };
         
     }, [canvas])
