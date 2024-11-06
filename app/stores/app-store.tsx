@@ -8,6 +8,7 @@ export type AppState = {
   svgMaps: {[key: string]: fabric.Object} | null
   currentMapObject: fabric.Object | null
   draggableSrc: string | null
+  isDrawing: boolean
 }
 
 export type AppActions = {
@@ -17,12 +18,13 @@ export type AppActions = {
   changeSVGMaps: (newSVGMaps: {[key: string]: fabric.Object}) => void
   changeCurrentMapObject: (newMapObject: fabric.Object) => void
   setDraggableSrc: (newSrc: string)=> void
+  setIsDrawing: (newIsDrawing: boolean) => void
 }
 
 export type AppStore = AppState & AppActions
 
 export const initAppStore = ():AppState=>{
-  return {map: "Ascent", canvas: null, isAttack: true, svgMaps: null, currentMapObject: null, draggableSrc: null}
+  return {map: "Ascent", canvas: null, isAttack: true, svgMaps: null, currentMapObject: null, draggableSrc: null, isDrawing:false}
 }
 
 export const defaultInitState: AppState = {
@@ -32,6 +34,7 @@ export const defaultInitState: AppState = {
   svgMaps: null,
   currentMapObject: null,
   draggableSrc: null,
+  isDrawing:false,
 }
 
 export const createAppStore = (
@@ -44,6 +47,7 @@ export const createAppStore = (
     changeSide: () => set((state)=>({isAttack: !state.isAttack})),
     changeSVGMaps: (newSVGMaps) => set(()=>({svgMaps: newSVGMaps})),
     changeCurrentMapObject: (newMapObject) => set(()=>({currentMapObject: newMapObject})),
-    setDraggableSrc: (newSrc)=>set(()=>({draggableSrc: newSrc}))
+    setDraggableSrc: (newSrc)=>set(()=>({draggableSrc: newSrc})),
+    setIsDrawing: (newIsDrawing) => set(()=> ({isDrawing: newIsDrawing}))
   }))
 }

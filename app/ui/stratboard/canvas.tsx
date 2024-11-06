@@ -4,7 +4,10 @@ import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 
 const Canvas = () => {
-    const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps, currentMapObject, changeCurrentMapObject, draggableSrc, setDraggableSrc} = useAppStore((state)=>state,)
+    const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps, 
+      currentMapObject, changeCurrentMapObject, draggableSrc, setDraggableSrc,
+      isDrawing, setIsDrawing
+    } = useAppStore((state)=>state,)
     // States for Canvas
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
@@ -16,6 +19,7 @@ const Canvas = () => {
       }
 
     useEffect(()=>{
+      console.log("SVG LOAD useEffect")
         const svgPaths = [
             'Abyss',
             'Ascent',
@@ -51,6 +55,7 @@ const Canvas = () => {
     }, [])
 
     useEffect(() => {
+        console.log("canvas useEffect")
         if (canvasRef.current) {
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {
                 width:1100,
@@ -58,18 +63,22 @@ const Canvas = () => {
                 fireMiddleClick: true,
                 stopContextMenu: true, 
                 selection: true,
-                preserveObjectStacking: true
+                preserveObjectStacking: true,
             });
-            //fabricCanvas.setDimensions({width:"100%", height:"100%"}, {cssOnly:true})
 
             changeCanvas(fabricCanvas);
     
             fabricCanvas.backgroundColor = 'lightgray';
+
+            if (currentMapObject){
+              canvas?.add(currentMapObject)
+            }
+
+
             fabricCanvas.renderAll();
 
             // Prevent default behavior for dragover to allow drops
             const handleDragOver = (event: DragEvent) => {
-              //console.log("default prevented")
               event.preventDefault();
               
           };
@@ -97,9 +106,10 @@ const Canvas = () => {
                 fabricCanvas.dispose();
             };
         }
-    }, [svgMaps]);
+    }, [svgMaps, currentMapObject]);
 
     useEffect(()=>{
+      console.log("drag drop icon useEffect")
       if (draggableSrc){
         fabric.Image.fromURL(draggableSrc, (img) => {
           img.scale(0.05)
@@ -121,29 +131,28 @@ const Canvas = () => {
       });
       }
        
-    }, [canvas, draggableSrc])
+    }, [draggableSrc])
+
+    useEffect(()=>{
+      console.log("clear canvas useEffect")
+      if(canvas){
+        canvas.remove(...canvas.getObjects())
+      }
+    },[map])
 
     // Load and center SVG on the canvas
     useEffect(() => {
+      console.log("load map useEffect")
       if (canvas) {
-        canvas.remove(...canvas.getObjects())
         if (svgMaps) {
             const mapObject = svgMaps[map]
             mapObject.selectable=false;
             mapObject.flipY=isAttack
             changeCurrentMapObject(mapObject);
             canvas.add(mapObject)
-            canvas?.renderAll();
         }
       }
-    }, [canvas, map]);
-
-    useEffect(()=>{
-        if (currentMapObject) {
-            currentMapObject.set('flipY', isAttack)
-            canvas?.renderAll()
-        }
-    }, [canvas, isAttack])
+    }, [canvas,map,isAttack]);
 
     useEffect(()=>{
         if(canvas){
@@ -159,8 +168,7 @@ const Canvas = () => {
             })
             canvas.on('mouse:down', function(this: any, opt){
               var evt = opt.e;
-              
-              if (!opt.target || opt.target==currentMapObject) {
+              if ((!opt.target || opt.target==currentMapObject)) {
                 this.isDragging = true;
                 this.selection = false;
                 this.lastPosX = evt.clientX;

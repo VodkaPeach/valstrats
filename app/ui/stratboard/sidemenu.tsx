@@ -2,9 +2,12 @@
 import MapMenu from "./dropdown"
 import { useAppStore } from "@/app/providers/app-store-provider"
 export default function SideMenu(){
-    const {changeSide} = useAppStore(state=>state)
+    const {changeSide, isDrawing, setIsDrawing} = useAppStore(state=>state)
     const handleChangeSide = () => {
         changeSide()
+    }
+    const handleIsDrawingSwitch = () => {
+        setIsDrawing(!isDrawing)
     }
     return(
         <div className="flex flex-col">
@@ -17,7 +20,7 @@ export default function SideMenu(){
             </div>
             <div>Tools</div>
             <div className="grid grid-cols-4">
-                <button>Pen</button>
+                <button onClick={handleIsDrawingSwitch}>Pen</button>
                 <button>Eraser</button>
             </div>
         </div>
