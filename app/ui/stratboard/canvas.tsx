@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 
@@ -8,6 +8,7 @@ const Canvas = () => {
     // States for Canvas
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+    const [iconDropPos, setIconDropPos] = useState({x: 0, y: 0})
 
     interface LoadedSVG {
         path: string;
@@ -76,7 +77,6 @@ const Canvas = () => {
           // Handle drop event to create a new image instance on the canvas
           const handleDrop = (event: DragEvent) => {
               event.preventDefault();
-      
               const imageUrl = event.dataTransfer?.getData('text/plain');
               
               if (imageUrl) {
@@ -104,8 +104,8 @@ const Canvas = () => {
         fabric.Image.fromURL(draggableSrc, (img) => {
           img.scale(0.05)
           img.set({
-          left: 0,
-          top: 0,
+          left: iconDropPos["x"],
+          top: iconDropPos["y"],
           originX: 'center',
           originY: 'center',
           selectable: true,
@@ -167,6 +167,10 @@ const Canvas = () => {
                 this.lastPosY = evt.clientY;
               }
             });
+            canvas.on('drop', (opt)=>{
+              const pointer = canvas.getPointer(opt.e);
+              setIconDropPos({x: pointer!.x, y:pointer!.y})
+            })
             canvas.on('mouse:move', function(this: any, opt) {
               if (this.isDragging) {
                 var e = opt.e;
