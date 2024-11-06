@@ -55,7 +55,7 @@ const Canvas = () => {
     }, [])
 
     useEffect(() => {
-        console.log("canvas useEffect")
+        console.log("canvas useEffect "+isDrawing)
         if (canvasRef.current) {
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {
                 width:1100,
@@ -64,15 +64,12 @@ const Canvas = () => {
                 stopContextMenu: true, 
                 selection: true,
                 preserveObjectStacking: true,
+                isDrawingMode:isDrawing,
             });
 
             changeCanvas(fabricCanvas);
     
             fabricCanvas.backgroundColor = 'lightgray';
-
-            if (currentMapObject){
-              canvas?.add(currentMapObject)
-            }
 
 
             fabricCanvas.renderAll();
@@ -106,7 +103,14 @@ const Canvas = () => {
                 fabricCanvas.dispose();
             };
         }
-    }, [svgMaps, currentMapObject]);
+    }, [svgMaps]);
+
+    useEffect(()=>{
+      console.log("set isDrawing useEffect")
+      if(canvas){
+        canvas.isDrawingMode=isDrawing
+      }
+    },[isDrawing])
 
     useEffect(()=>{
       console.log("drag drop icon useEffect")
@@ -150,11 +154,13 @@ const Canvas = () => {
             mapObject.flipY=isAttack
             changeCurrentMapObject(mapObject);
             canvas.add(mapObject)
+            canvas.renderAll()
         }
       }
     }, [canvas,map,isAttack]);
 
     useEffect(()=>{
+      console.log("mouse event useEffect")
         if(canvas){
             canvas.on('mouse:wheel', (opt) => {
                 const delta = opt.e.deltaY;
@@ -168,11 +174,14 @@ const Canvas = () => {
             })
             canvas.on('mouse:down', function(this: any, opt){
               var evt = opt.e;
-              if ((!opt.target || opt.target==currentMapObject)) {
-                this.isDragging = true;
-                this.selection = false;
-                this.lastPosX = evt.clientX;
-                this.lastPosY = evt.clientY;
+              console.log("drawing mode: "+isDrawing)
+              if (!canvas.isDrawingMode){
+                if ((!opt.target || opt.target==currentMapObject)) {
+                  this.isDragging = true;
+                  this.selection = false;
+                  this.lastPosX = evt.clientX;
+                  this.lastPosY = evt.clientY;
+                }
               }
             });
             canvas.on('drop', (opt)=>{
@@ -199,7 +208,7 @@ const Canvas = () => {
             });
         };
         
-    }, [canvas,currentMapObject])
+    }, [currentMapObject, isDrawing])
 
     return (
         <div >
