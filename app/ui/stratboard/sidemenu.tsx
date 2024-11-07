@@ -2,12 +2,17 @@
 import MapMenu from "./dropdown"
 import { useAppStore } from "@/app/providers/app-store-provider"
 export default function SideMenu(){
-    const {changeSide, isDrawing, setIsDrawing} = useAppStore(state=>state)
+    const {changeSide, isDrawing, setIsDrawing, isErasing, setIsErasing} = useAppStore(state=>state)
     const handleChangeSide = () => {
         changeSide()
     }
     const handleIsDrawingSwitch = () => {
         setIsDrawing(!isDrawing)
+        setIsErasing(false)
+    }
+    const handleIsErasingSwitch = () => {
+        setIsDrawing(false)
+        setIsErasing(!isErasing)
     }
     return(
         <div className="flex flex-col">
@@ -21,7 +26,7 @@ export default function SideMenu(){
             <div>Tools</div>
             <div className="grid grid-cols-4">
                 <button onClick={handleIsDrawingSwitch}>Pen</button>
-                <button>Eraser</button>
+                <button onClick={handleIsErasingSwitch}>Eraser</button>
             </div>
         </div>
     )
