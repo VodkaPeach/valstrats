@@ -3,12 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 import { svgPaths } from '@/app/library/data';
+import { useStore } from 'zustand';
 
 const Canvas = () => {
     const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps, 
       currentMapObject, changeCurrentMapObject, draggableSrc, setDraggableSrc,
-      isDrawing, setIsDrawing
-    } = useAppStore((state)=>state,)
+      isDrawing, setIsDrawing, isErasingMode, isErasing, setIsErasing
+    } = useAppStore((state)=>state)
     // States for Canvas
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
@@ -168,7 +169,7 @@ const Canvas = () => {
 
     // mouse down/move/up effect, dependency: isDrawing, isErasing, currentMapObject
     useEffect(()=>{
-      console.log("mouse event useEffect")
+      console.log("mouse move event useEffect")
         if(canvas){            
             canvas.on('mouse:move', function(this: any, opt) {
               if (this.isDragging) {
@@ -182,16 +183,21 @@ const Canvas = () => {
               }
             });
         };
-    }, [currentMapObject, isDrawing])
+    }, [currentMapObject, isDrawing, isErasingMode])
 
   // mouse down useEffect, dependency: currentMapObject, isDrawing
   useEffect(()=>{
     if(canvas){
       canvas.on('mouse:down', function(this: any, opt){
+        if(isErasingMode){
+          setIsErasing(true)
+          //console.log("mouse down start erasing")
+        }
         var evt = opt.e;
-        console.log("drawing mode: "+isDrawing)
-        if (!canvas.isDrawingMode){
-          if ((!opt.target || opt.target==currentMapObject)) {
+        console.log("drawing mode: "+isDrawing+isErasingMode)
+        if (!canvas.isDrawingMode && !isErasingMode){
+          if (!opt.target || opt.target==currentMapObject) {
+            console.log("triggered")
             this.isDragging = true;
             this.selection = false;
             this.lastPosX = evt.clientX;
@@ -200,12 +206,16 @@ const Canvas = () => {
         }
       })
     }
-  }, [isDrawing, currentMapObject])
+  }, [isDrawing, currentMapObject, isErasingMode])
 
   useEffect(()=>{
     if(canvas){
       canvas.on('mouse:up', function(this: any, opt) {
-        // on mouse up we want to recalculate new interaction
+        if(isErasing){
+          setIsErasing(false)
+          //console.log("mouse up stop erasing")
+        }
+        // on mouse up recalculate new interaction
         // for all objects, so we call setViewportTransform
         if(this.isDragging){
           this.setViewportTransform(this.viewportTransform);
@@ -215,7 +225,7 @@ const Canvas = () => {
         
       });
     }
-  }, [canvas])
+  }, [canvas, isErasing])
 
     return (
         <div >
