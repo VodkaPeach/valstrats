@@ -169,20 +169,7 @@ const Canvas = () => {
     // mouse down/move/up effect, dependency: isDrawing, isErasing, currentMapObject
     useEffect(()=>{
       console.log("mouse event useEffect")
-        if(canvas){
-            canvas.on('mouse:down', function(this: any, opt){
-              var evt = opt.e;
-              console.log("drawing mode: "+isDrawing)
-              if (!canvas.isDrawingMode){
-                if ((!opt.target || opt.target==currentMapObject)) {
-                  this.isDragging = true;
-                  this.selection = false;
-                  this.lastPosX = evt.clientX;
-                  this.lastPosY = evt.clientY;
-                }
-              }
-            });
-            
+        if(canvas){            
             canvas.on('mouse:move', function(this: any, opt) {
               if (this.isDragging) {
                 var e = opt.e;
@@ -194,16 +181,41 @@ const Canvas = () => {
                 this.lastPosY = e.clientY;
               }
             });
-            canvas.on('mouse:up', function(this: any, opt) {
-              // on mouse up we want to recalculate new interaction
-              // for all objects, so we call setViewportTransform
-              this.setViewportTransform(this.viewportTransform);
-              this.isDragging = false;
-              this.selection = true;
-            });
         };
-        
     }, [currentMapObject, isDrawing])
+
+  // mouse down useEffect, dependency: currentMapObject, isDrawing
+  useEffect(()=>{
+    if(canvas){
+      canvas.on('mouse:down', function(this: any, opt){
+        var evt = opt.e;
+        console.log("drawing mode: "+isDrawing)
+        if (!canvas.isDrawingMode){
+          if ((!opt.target || opt.target==currentMapObject)) {
+            this.isDragging = true;
+            this.selection = false;
+            this.lastPosX = evt.clientX;
+            this.lastPosY = evt.clientY;
+          }
+        }
+      })
+    }
+  }, [isDrawing, currentMapObject])
+
+  useEffect(()=>{
+    if(canvas){
+      canvas.on('mouse:up', function(this: any, opt) {
+        // on mouse up we want to recalculate new interaction
+        // for all objects, so we call setViewportTransform
+        if(this.isDragging){
+          this.setViewportTransform(this.viewportTransform);
+          this.isDragging = false;
+          this.selection = true;
+        }
+        
+      });
+    }
+  }, [canvas])
 
     return (
         <div >
