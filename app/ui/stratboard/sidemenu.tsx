@@ -16,9 +16,9 @@ export default function SideMenu(){
     }
     return(
         <div className="flex flex-col">
-            <div className="flex flex-row">
+            <div className="inline-block space-x-0.5">
                 <MapMenu/>
-                <button onClick={handleChangeSide}>A</button>
+                <button className="w-1/4 rounded-md bg-slate-500" onClick={handleChangeSide}>A</button>
             </div>
             <div>
                 <button>Delete Everything</button>

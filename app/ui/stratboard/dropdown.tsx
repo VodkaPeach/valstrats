@@ -10,7 +10,7 @@ import { svgPaths } from "@/app/library/data";
 
 export default function MapMenu() {
     const {map, changeMap} = useAppStore(store=>store)
-    const itemList = svgPaths.map((value) => <DropdownItem key={value}>{value}</DropdownItem>)
+    const itemList = svgPaths.map((value) => <DropdownItem className="bg-slate-600 w-full h-6" key={value}>{value}</DropdownItem>)
     function updateMap(key:Key):void{
         const newMap = key as string;
         if (key!=map) {
@@ -20,11 +20,11 @@ export default function MapMenu() {
     return(
         <Dropdown>
             <DropdownTrigger>
-                <button>
+                <button className="w-3/4 rounded-md h-8 bg-slate-600">
                     {map}
                 </button>
             </DropdownTrigger>
-            <DropdownMenu
+            <DropdownMenu className="w-20"
                 onAction={(key)=>updateMap(key)}
             >
                 {itemList}
