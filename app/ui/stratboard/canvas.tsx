@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
+import { svgPaths } from '@/app/library/data';
 
 const Canvas = () => {
     const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps, 
@@ -20,19 +21,6 @@ const Canvas = () => {
 
     useEffect(()=>{
       console.log("SVG LOAD useEffect")
-        const svgPaths = [
-            'Abyss',
-            'Ascent',
-            'Bind',
-            'Breeze',
-            'Fracture',
-            'Haven',
-            'Icebox',
-            'Lotus',
-            'Pearl',
-            'Split',
-            'Sunset',
-        ];
         Promise.all<LoadedSVG>(
             svgPaths.map((path: string) =>
               new Promise((resolve, reject) => {

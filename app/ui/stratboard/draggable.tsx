@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/image";
 type MyComponentProps = {
     src: string;
-    //id: number;
 };
 const Draggable: React.FC<MyComponentProps> = ( {src}) => {
     const handleDragStart = (event:React.DragEvent<HTMLImageElement>) => {
@@ -12,7 +11,7 @@ const Draggable: React.FC<MyComponentProps> = ( {src}) => {
     return(
         <Image 
         src={src}
-        alt={'ageng icon'} 
+        alt={'agent icon'} 
         draggable={true}
         width={100}
         height={100}
