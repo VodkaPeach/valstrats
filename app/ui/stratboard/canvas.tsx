@@ -67,7 +67,6 @@ const Canvas = () => {
               event.preventDefault();
               
           };
-
           // Handle drop event to create a new image instance on the canvas
           const handleDrop = (event: DragEvent) => {
               event.preventDefault();
@@ -147,19 +146,30 @@ const Canvas = () => {
       }
     }, [canvas,map,isAttack]);
 
+    // zoom canvas and drop, dependency: canvas
+    useEffect(()=>{
+      if (canvas) {
+        canvas.on('mouse:wheel', (opt) => {
+          const delta = opt.e.deltaY;
+          let zoom:number = canvas.getZoom();
+          zoom*=0.999**delta;
+          if(zoom>3) zoom=3;
+          if(zoom<0.5) zoom=0.5;
+          canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+          opt.e.preventDefault();
+          opt.e.stopPropagation();
+        });
+        canvas.on('drop', (opt)=>{
+          const pointer = canvas.getPointer(opt.e);
+          setIconDropPos({x: pointer!.x, y:pointer!.y})
+        })
+      }
+    }, [canvas])
+
+    // mouse down/move/up effect, dependency: isDrawing, isErasing, currentMapObject
     useEffect(()=>{
       console.log("mouse event useEffect")
         if(canvas){
-            canvas.on('mouse:wheel', (opt) => {
-                const delta = opt.e.deltaY;
-                let zoom:number = canvas.getZoom();
-                zoom*=0.999**delta;
-                if(zoom>3) zoom=3;
-                if(zoom<0.5) zoom=0.5;
-                canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-                opt.e.preventDefault();
-                opt.e.stopPropagation();
-            })
             canvas.on('mouse:down', function(this: any, opt){
               var evt = opt.e;
               console.log("drawing mode: "+isDrawing)
@@ -172,10 +182,7 @@ const Canvas = () => {
                 }
               }
             });
-            canvas.on('drop', (opt)=>{
-              const pointer = canvas.getPointer(opt.e);
-              setIconDropPos({x: pointer!.x, y:pointer!.y})
-            })
+            
             canvas.on('mouse:move', function(this: any, opt) {
               if (this.isDragging) {
                 var e = opt.e;
