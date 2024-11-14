@@ -29,7 +29,7 @@ export default function BottomBar(){
     
     const agentIconArray = agentIconPaths.map(
         (path, index) => (
-          <Draggable src={path} key={index}/>
+          <Draggable src={path} key={path}/>
         )
     )
     return(

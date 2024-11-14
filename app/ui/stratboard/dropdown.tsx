@@ -24,7 +24,7 @@ export default function MapMenu() {
                     {map}
                 </button>
             </DropdownTrigger>
-            <DropdownMenu className="w-20"
+            <DropdownMenu className="w-36 text-center"
                 onAction={(key)=>updateMap(key)}
             >
                 {itemList}
