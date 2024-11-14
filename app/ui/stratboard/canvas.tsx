@@ -3,18 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 import {fabric} from 'fabric';
 import { useAppStore } from '@/app/providers/app-store-provider';
 import { svgPaths } from '@/app/library/data';
-import { useStore } from 'zustand';
 
 const Canvas = () => {
     const {map, canvas, changeCanvas, isAttack, svgMaps, changeSVGMaps, 
       currentMapObject, changeCurrentMapObject, draggableSrc, setDraggableSrc,
       isDrawing, setIsDrawing, isErasingMode, isErasing, setIsErasing
     } = useAppStore((state)=>state)
-    // States for Canvas
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    // const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
     const [iconDropPos, setIconDropPos] = useState({x: 0, y: 0})
-
     interface LoadedSVG {
         path: string;
         svg: fabric.Object;
@@ -44,14 +40,14 @@ const Canvas = () => {
     }, [])
 
     useEffect(() => {
-        console.log("canvas useEffect "+isDrawing)
+        console.log("canvas useEffect ")
         if (canvasRef.current) {
             const fabricCanvas = new fabric.Canvas(canvasRef.current, {
                 width:1100,
                 height:600,
                 fireMiddleClick: true,
                 stopContextMenu: true, 
-                selection: true,
+                selection: false,
                 preserveObjectStacking: true,
                 isDrawingMode:isDrawing,
             });
@@ -165,6 +161,10 @@ const Canvas = () => {
           setIconDropPos({x: pointer!.x, y:pointer!.y})
         })
       }
+      return () => {
+        canvas?.off("drop");
+        canvas?.off('mouse:wheel')
+      }
     }, [canvas])
 
     // mouse down/move/up effect, dependency: isDrawing, isErasing, currentMapObject
@@ -177,12 +177,15 @@ const Canvas = () => {
                 var vpt = this.viewportTransform;
                 vpt[4] += e.clientX - this.lastPosX;
                 vpt[5] += e.clientY - this.lastPosY;
-                this.requestRenderAll();
+                this.renderAll();
                 this.lastPosX = e.clientX;
                 this.lastPosY = e.clientY;
               }
             });
         };
+        return () => {
+          canvas?.off('mouse:move')
+        }
     }, [currentMapObject, isDrawing, isErasingMode])
 
   // mouse down useEffect, dependency: currentMapObject, isDrawing
@@ -206,6 +209,9 @@ const Canvas = () => {
         }
       })
     }
+    return () => {
+      canvas?.off("mouse:down");
+    }
   }, [isDrawing, currentMapObject, isErasingMode])
 
   useEffect(()=>{
@@ -224,6 +230,9 @@ const Canvas = () => {
         }
         
       });
+    }
+    return () => {
+      canvas?.off("mouse:up");
     }
   }, [canvas, isErasing])
 
