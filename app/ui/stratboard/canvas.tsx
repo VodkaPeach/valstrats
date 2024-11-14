@@ -55,6 +55,7 @@ const Canvas = () => {
             changeCanvas(fabricCanvas);
     
             fabricCanvas.backgroundColor = 'lightgray';
+            fabric.Object.prototype.selectable = false;
 
 
             fabricCanvas.renderAll();
@@ -226,7 +227,6 @@ const Canvas = () => {
         if(this.isDragging){
           this.setViewportTransform(this.viewportTransform);
           this.isDragging = false;
-          this.selection = true;
         }
         
       });
